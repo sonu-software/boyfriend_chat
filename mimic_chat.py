@@ -155,40 +155,47 @@ def knowledge_base(query):
 
 
 # Chat input
-query = st.chat_input("your message")
+query = st.chat_input("Your message")
 
 if query:
     now = datetime.now().strftime("%I:%M %p")
 
-    # Step 1: Show user message immediately
+    # Step 1: Add user message
     st.session_state.messages.append({
         "role": "user",
         "content": query,
         "timestamp": now
     })
 
-    # Step 2: Show typing... placeholder using st.empty()
-    typing_placeholder = st.empty()
+    # Step 2: Add "typing..." message (temporarily)
     st.session_state.messages.append({
         "role": "sonu",
         "content": "⏳ typing...",
         "timestamp": datetime.now().strftime("%I:%M %p")
     })
 
-    # Re-render UI with user + typing
-    with typing_placeholder.container():
-        st.markdown("""
-            <div class="chat-message sonu">
-                <div class="message-content">⏳ typing...
-                    <div class="timestamp">{}</div>
+    # Step 3: Immediately display all messages so far
+    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+    for entry in st.session_state.messages:
+        role = entry["role"]
+        msg = entry["content"]
+        timestamp = entry.get("timestamp", datetime.now().strftime("%I:%M %p"))
+        css_class = "user" if role == "user" else "sonu"
+
+        st.markdown(f"""
+            <div class="chat-message {css_class}">
+                <div class="message-content">
+                    {msg}
+                    <div class="timestamp">{timestamp}</div>
                 </div>
             </div>
-        """.format(datetime.now().strftime("%I:%M %p")), unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    # Wait to simulate typing
+    # Step 4: Wait to simulate typing
     time.sleep(2)
 
-    # Step 3: Generate LLM response
+    # Step 5: Get knowledge + LLM reply
     final_result = knowledge_base(query)
     prompt = f"""
     You are Sonu— ek caring, desi boyfriend jo hamesha apni girlfriend se pyaar se baat karta hai.
@@ -201,16 +208,14 @@ if query:
 
     Be Sonu and answer in 1 line. Kabhi kabhi romantic sawaal bhi puchho.
     """
-
     response = chat.send_message(prompt)
     reply = response.text.strip()
 
-    # Step 4: Replace typing with real reply
+    # Step 6: Replace last "typing..." with real reply
     st.session_state.messages[-1]["content"] = reply
 
-    # Clear placeholder (in case we want to reuse later)
-    typing_placeholder.empty()
-
+    # Step 7: Rerun app so final message appears cleanly
+    st.experimental_rerun()
 
 
 
@@ -276,5 +281,6 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 '''
 ###################################################################################################################################################################
+
 
 
