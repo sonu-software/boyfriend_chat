@@ -154,28 +154,11 @@ def knowledge_base(query):
 
 
 
-# Chat input
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-######################################################################################################################################################
-##################################this code get the user message and llm response at same time##################################
-
+query = st.chat_input("Your message")
 if query:
     now = datetime.now().strftime("%I:%M %p")
     st.session_state.messages.append({"role": "user", "content": query, "timestamp": now})
@@ -221,6 +204,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 
 ###################################################################################################################################################################
+
 
 
 
