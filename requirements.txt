@@ -1,0 +1,8 @@
+# or faiss-gpu, depending on your setup
+python-dotenv
+sentence-transformers
+langchain
+langchain-community
+faiss-cpu  
+google-generativeai
+streamlit
