@@ -156,88 +156,6 @@ def knowledge_base(query):
 
 # Chat input
 
-query = st.chat_input("Your message")
-
-# 1. Append user message and placeholder response
-if query:
-    now = datetime.now().strftime("%I:%M %p")
-
-    st.session_state.messages.append({
-        "role": "user",
-        "content": query,
-        "timestamp": now
-    })
-
-    # Add placeholder "typing..."
-    st.session_state.messages.append({
-        "role": "sonu",
-        "content": "⏳ typing...",
-        "timestamp": now
-    })
-
-    # Show chat immediately (user + typing)
-    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-    for entry in st.session_state.messages:
-        role = entry["role"]
-        msg = entry["content"]
-        timestamp = entry["timestamp"]
-        css_class = "user" if role == "user" else "sonu"
-
-        st.markdown(f"""
-            <div class="chat-message {css_class}">
-                <div class="message-content">
-                    {msg}
-                    <div class="timestamp">{timestamp}</div>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # Wait 2 seconds so "typing..." renders
-    time.sleep(2)
-
-    # Generate response after delay
-    final_result = knowledge_base(query)
-
-    prompt = f"""
-    You are Sonu— ek caring, desi boyfriend jo hamesha apni girlfriend se pyaar se baat karta hai.
-    Use short Hinglish lines, tum-wala tone, thoda romantic touch.
-    These are his previous chats — tumhare style ke reference ke liye:
-    {final_result}
-
-    She asks:
-    {query}
-
-    Be Sonu and answer in 1 line. Kabhi kabhi romantic sawaal bhi puchho.
-    """
-
-    response = chat.send_message(prompt)
-    reply = response.text.strip()
-
-    # Replace last message with real reply
-    st.session_state.messages[-1]["content"] = reply
-
-    # Rerun to display full final chat
-    st.experimental_rerun()
-
-# 2. Display chat (on every rerun)
-elif "messages" in st.session_state:
-    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-    for entry in st.session_state.messages:
-        role = entry["role"]
-        msg = entry["content"]
-        timestamp = entry.get("timestamp", datetime.now().strftime("%I:%M %p"))
-        css_class = "user" if role == "user" else "sonu"
-
-        st.markdown(f"""
-            <div class="chat-message {css_class}">
-                <div class="message-content">
-                    {msg}
-                    <div class="timestamp">{timestamp}</div>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
 
 
 
@@ -257,7 +175,7 @@ elif "messages" in st.session_state:
 
 ######################################################################################################################################################
 ##################################this code get the user message and llm response at same time##################################
-'''
+
 if query:
     now = datetime.now().strftime("%I:%M %p")
     st.session_state.messages.append({"role": "user", "content": query, "timestamp": now})
@@ -301,8 +219,9 @@ for entry in st.session_state.messages:
     """, unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-'''
+
 ###################################################################################################################################################################
+
 
 
 
