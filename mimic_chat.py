@@ -155,50 +155,49 @@ def knowledge_base(query):
 
 
 # Chat input
+
 query = st.chat_input("Your message")
 
+# 1. Append user message and placeholder response
 if query:
     now = datetime.now().strftime("%I:%M %p")
 
-    # Append user's message
     st.session_state.messages.append({
         "role": "user",
         "content": query,
         "timestamp": now
     })
 
-    # Append placeholder "typing..."
+    # Add placeholder "typing..."
     st.session_state.messages.append({
         "role": "sonu",
         "content": "⏳ typing...",
-        "timestamp": datetime.now().strftime("%I:%M %p")
+        "timestamp": now
     })
 
-# Chat display block (runs every time)
-st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-for entry in st.session_state.messages:
-    role = entry["role"]
-    msg = entry["content"]
-    timestamp = entry.get("timestamp", datetime.now().strftime("%I:%M %p"))
-    css_class = "user" if role == "user" else "sonu"
+    # Show chat immediately (user + typing)
+    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+    for entry in st.session_state.messages:
+        role = entry["role"]
+        msg = entry["content"]
+        timestamp = entry["timestamp"]
+        css_class = "user" if role == "user" else "sonu"
 
-    st.markdown(f"""
-        <div class="chat-message {css_class}">
-            <div class="message-content">
-                {msg}
-                <div class="timestamp">{timestamp}</div>
+        st.markdown(f"""
+            <div class="chat-message {css_class}">
+                <div class="message-content">
+                    {msg}
+                    <div class="timestamp">{timestamp}</div>
+                </div>
             </div>
-        </div>
-    """, unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# Handle LLM response only if "⏳ typing..." is the last message
-if st.session_state.messages and st.session_state.messages[-1]["content"] == "⏳ typing...":
-    time.sleep(2)  # simulate typing delay
+    # Wait 2 seconds so "typing..." renders
+    time.sleep(2)
 
-    # Generate response from Gemini
-    last_user_query = st.session_state.messages[-2]["content"]
-    final_result = knowledge_base(last_user_query)
+    # Generate response after delay
+    final_result = knowledge_base(query)
 
     prompt = f"""
     You are Sonu— ek caring, desi boyfriend jo hamesha apni girlfriend se pyaar se baat karta hai.
@@ -207,7 +206,7 @@ if st.session_state.messages and st.session_state.messages[-1]["content"] == "�
     {final_result}
 
     She asks:
-    {last_user_query}
+    {query}
 
     Be Sonu and answer in 1 line. Kabhi kabhi romantic sawaal bhi puchho.
     """
@@ -215,11 +214,30 @@ if st.session_state.messages and st.session_state.messages[-1]["content"] == "�
     response = chat.send_message(prompt)
     reply = response.text.strip()
 
-    # Replace "typing..." with actual reply
+    # Replace last message with real reply
     st.session_state.messages[-1]["content"] = reply
 
-    # Force re-render by clearing input (optional)
-    st.experimental_rerun()  # <- can keep this, but not required
+    # Rerun to display full final chat
+    st.experimental_rerun()
+
+# 2. Display chat (on every rerun)
+elif "messages" in st.session_state:
+    st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+    for entry in st.session_state.messages:
+        role = entry["role"]
+        msg = entry["content"]
+        timestamp = entry.get("timestamp", datetime.now().strftime("%I:%M %p"))
+        css_class = "user" if role == "user" else "sonu"
+
+        st.markdown(f"""
+            <div class="chat-message {css_class}">
+                <div class="message-content">
+                    {msg}
+                    <div class="timestamp">{timestamp}</div>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 
@@ -285,6 +303,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 '''
 ###################################################################################################################################################################
+
 
 
 
