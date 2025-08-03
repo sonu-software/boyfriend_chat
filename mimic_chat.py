@@ -1,6 +1,7 @@
 import os
 import re
 import warnings
+import time
 from datetime import datetime
 
 import streamlit as st
@@ -149,47 +150,46 @@ def knowledge_base(query):
     results = retriever.invoke(query)
     return results
 
+
+
+
+
 # Chat input
 query = st.chat_input("your message")
-
 
 if query:
     now = datetime.now().strftime("%I:%M %p")
 
-    # Step 1: Add user message immediately
+    # Step 1: Show user message immediately
     st.session_state.messages.append({
         "role": "user",
         "content": query,
         "timestamp": now
     })
 
-    # Step 2: Show UI right away with updated messages (force re-render)
-    st.experimental_rerun()
-
-# Step 3: Detect the last message is from user but no Sonu reply yet
-if (
-    len(st.session_state.messages) >= 1
-    and st.session_state.messages[-1]["role"] == "user"
-):
-    # Add typing... placeholder
+    # Step 2: Show typing... placeholder using st.empty()
+    typing_placeholder = st.empty()
     st.session_state.messages.append({
         "role": "sonu",
         "content": "⏳ typing...",
         "timestamp": datetime.now().strftime("%I:%M %p")
     })
 
-    # Refresh UI again before computing response
-    st.experimental_rerun()
+    # Re-render UI with user + typing
+    with typing_placeholder.container():
+        st.markdown("""
+            <div class="chat-message sonu">
+                <div class="message-content">⏳ typing...
+                    <div class="timestamp">{}</div>
+                </div>
+            </div>
+        """.format(datetime.now().strftime("%I:%M %p")), unsafe_allow_html=True)
 
-# Step 4: Replace "typing..." with real response
-if (
-    len(st.session_state.messages) >= 2
-    and st.session_state.messages[-1]["role"] == "sonu"
-    and st.session_state.messages[-1]["content"] == "⏳ typing..."
-):
-    user_query = st.session_state.messages[-2]["content"]
-    final_result = knowledge_base(user_query)
+    # Wait to simulate typing
+    time.sleep(2)
 
+    # Step 3: Generate LLM response
+    final_result = knowledge_base(query)
     prompt = f"""
     You are Sonu— ek caring, desi boyfriend jo hamesha apni girlfriend se pyaar se baat karta hai.
     Use short Hinglish lines, tum-wala tone, thoda romantic touch.
@@ -197,7 +197,7 @@ if (
     {final_result}
 
     She asks:
-    {user_query}
+    {query}
 
     Be Sonu and answer in 1 line. Kabhi kabhi romantic sawaal bhi puchho.
     """
@@ -205,12 +205,11 @@ if (
     response = chat.send_message(prompt)
     reply = response.text.strip()
 
-    # Replace "typing..." with real reply
+    # Step 4: Replace typing with real reply
     st.session_state.messages[-1]["content"] = reply
 
-    # Show it now
-    st.experimental_rerun()
-
+    # Clear placeholder (in case we want to reuse later)
+    typing_placeholder.empty()
 
 
 
@@ -277,4 +276,5 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 '''
 ###################################################################################################################################################################
+
 
