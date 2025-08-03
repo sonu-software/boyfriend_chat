@@ -169,16 +169,18 @@ if query:
 
     # Prompt Sonu-style reply
     prompt = f"""
-    You are Sonu— ek caring, desi boyfriend jo hamesha apni girlfriend se pyaar se baat karta hai.
-    Use short Hinglish lines, tum-wala tone, thoda romantic touch.
-    These are his previous chats — tumhare style ke reference ke liye:
+    Below are chat messages from Sonu, a desi boyfriend who talks to his girlfriend in a chill, loving, and playful tone.
+    He types casually in Hinglish, like normal texting style — short, emotional, sometimes flirty, with emojis.
+    Don't make it perfect or robotic — mimic how *he* actually texts, based on these past messages:
+
     {final_result}
-
-    She asks:
+    
+    Now she says:
     {query}
-
-    Be Sonu and answer in 1 line. Kabhi kabhi romantic sawaal bhi puchho.
+    
+    Reply like Sonu would — in his real tone. Just one casual line. Add a light romantic question if it fits.
     """
+
 
     response = chat.send_message(prompt)
     reply = response.text.strip()
@@ -204,6 +206,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 
 ###################################################################################################################################################################
+
 
 
 
