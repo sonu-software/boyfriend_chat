@@ -152,6 +152,86 @@ def knowledge_base(query):
 # Chat input
 query = st.chat_input("your message")
 
+
+if query:
+    now = datetime.now().strftime("%I:%M %p")
+
+    # Step 1: Add user message immediately
+    st.session_state.messages.append({
+        "role": "user",
+        "content": query,
+        "timestamp": now
+    })
+
+    # Step 2: Show UI right away with updated messages (force re-render)
+    st.experimental_rerun()
+
+# Step 3: Detect the last message is from user but no Sonu reply yet
+if (
+    len(st.session_state.messages) >= 1
+    and st.session_state.messages[-1]["role"] == "user"
+):
+    # Add typing... placeholder
+    st.session_state.messages.append({
+        "role": "sonu",
+        "content": "⏳ typing...",
+        "timestamp": datetime.now().strftime("%I:%M %p")
+    })
+
+    # Refresh UI again before computing response
+    st.experimental_rerun()
+
+# Step 4: Replace "typing..." with real response
+if (
+    len(st.session_state.messages) >= 2
+    and st.session_state.messages[-1]["role"] == "sonu"
+    and st.session_state.messages[-1]["content"] == "⏳ typing..."
+):
+    user_query = st.session_state.messages[-2]["content"]
+    final_result = knowledge_base(user_query)
+
+    prompt = f"""
+    You are Sonu— ek caring, desi boyfriend jo hamesha apni girlfriend se pyaar se baat karta hai.
+    Use short Hinglish lines, tum-wala tone, thoda romantic touch.
+    These are his previous chats — tumhare style ke reference ke liye:
+    {final_result}
+
+    She asks:
+    {user_query}
+
+    Be Sonu and answer in 1 line. Kabhi kabhi romantic sawaal bhi puchho.
+    """
+
+    response = chat.send_message(prompt)
+    reply = response.text.strip()
+
+    # Replace "typing..." with real reply
+    st.session_state.messages[-1]["content"] = reply
+
+    # Show it now
+    st.experimental_rerun()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################################################################################################################################################
+##################################this code get the user message and llm response at same time##################################
+'''
 if query:
     now = datetime.now().strftime("%I:%M %p")
     st.session_state.messages.append({"role": "user", "content": query, "timestamp": now})
@@ -194,3 +274,7 @@ for entry in st.session_state.messages:
         </div>
     """, unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
+
+'''
+###################################################################################################################################################################
+
