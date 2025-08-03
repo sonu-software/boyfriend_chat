@@ -155,26 +155,28 @@ def knowledge_base(query):
 
 
 # Chat input
+
+
 query = st.chat_input("Your message")
 
 if query:
     now = datetime.now().strftime("%I:%M %p")
 
-    # Step 1: Add user message
+    # 1. Add user message to session
     st.session_state.messages.append({
         "role": "user",
         "content": query,
         "timestamp": now
     })
 
-    # Step 2: Add "typing..." message (temporarily)
+    # 2. Add "typing..." message
     st.session_state.messages.append({
         "role": "sonu",
         "content": "⏳ typing...",
         "timestamp": datetime.now().strftime("%I:%M %p")
     })
 
-    # Step 3: Immediately display all messages so far
+    # 3. Display current chat (user + typing)
     st.markdown('<div class="chat-container">', unsafe_allow_html=True)
     for entry in st.session_state.messages:
         role = entry["role"]
@@ -192,11 +194,13 @@ if query:
         """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Step 4: Wait to simulate typing
+    # 4. Wait to simulate typing...
     time.sleep(2)
 
-    # Step 5: Get knowledge + LLM reply
+    # 5. Get FAISS knowledge
     final_result = knowledge_base(query)
+
+    # 6. Prompt Sonu-style response
     prompt = f"""
     You are Sonu— ek caring, desi boyfriend jo hamesha apni girlfriend se pyaar se baat karta hai.
     Use short Hinglish lines, tum-wala tone, thoda romantic touch.
@@ -208,13 +212,14 @@ if query:
 
     Be Sonu and answer in 1 line. Kabhi kabhi romantic sawaal bhi puchho.
     """
+
     response = chat.send_message(prompt)
     reply = response.text.strip()
 
-    # Step 6: Replace last "typing..." with real reply
+    # 7. Replace last "typing..." with real reply
     st.session_state.messages[-1]["content"] = reply
 
-    # Step 7: Rerun app so final message appears cleanly
+    # 8. Rerun to update UI cleanly
     st.experimental_rerun()
 
 
@@ -281,6 +286,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 '''
 ###################################################################################################################################################################
+
 
 
 
