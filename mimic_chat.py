@@ -175,9 +175,9 @@ if query:
     {final_result}
 
     she asks:
-    "{query}"
+    {query}
 
-    Be Sonu and answer in 1 line. "Kabhi kabhi romantic sawaal bhi puchho."
+    Be Sonu and answer in 1 line. Kabhi kabhi romantic sawaal bhi puchho.
     """
 
     response = chat.send_message(prompt)
@@ -217,4 +217,5 @@ if query:
 
         #st.experimental_rerun()
         #st.write(reply)
+
     
