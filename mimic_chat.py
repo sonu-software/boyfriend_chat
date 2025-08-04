@@ -169,7 +169,33 @@ if query:
     india = pytz.timezone('Asia/Kolkata')
     now = datetime.now(india).strftime("%I:%M %p")
     st.session_state.messages.append({"role": "user", "content": query, "timestamp": now})
-    st.session_state.messages.append({"role": "sonu", "content": "⏳ typing...", "timestamp": now})
+    #st.session_state.messages.append({"role": "sonu", "content": "⏳ typing...", "timestamp": now})
+
+    
+    typing_placeholder = st.empty()
+
+    typing_placeholder.markdown(f"""
+    <div class="msg-container">
+        <div class="bot-msg">
+            ⏳ typing...
+            <div class="timestamp">{now}</div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
+    time.sleep(3)
+
+    
+
+
+
+
+
+
+
+
+
+    
 
     # Get FAISS knowledge
     final_result = knowledge_base(query)
@@ -227,6 +253,11 @@ if query:
 
     response = chat.send_message(prompt)
     reply = response.text.strip()
+
+    typing_placeholder.empty()
+    st.session_state.messages.append({"role": "sonu", "content": reply, "timestamp": datetime.now(india).strftime("%I:%M %p")})
+
+    
     st.session_state.last_query = query
     st.session_state.last_response = reply
     
@@ -249,6 +280,7 @@ for msg in st.session_state.messages:
 st.markdown('</div>', unsafe_allow_html=True)
 
 ###################################################################################################################################################################
+
 
 
 
