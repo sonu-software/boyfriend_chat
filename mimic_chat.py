@@ -168,6 +168,7 @@ if query:
     now = datetime.now().strftime("%I:%M %p")
     st.session_state.messages.append({"role": "user", "content": query, "timestamp": now})
     st.session_state.messages.append({"role": "sonu", "content": "⏳ typing...", "timestamp": now})
+    st.experimental_rerun()
     time.sleep(5)
 
     # Get FAISS knowledge
@@ -251,6 +252,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 
 ###################################################################################################################################################################
+
 
 
 
