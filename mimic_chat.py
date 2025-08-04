@@ -233,25 +233,23 @@ if query:
     st.session_state.messages[-1]["content"] = reply
 
 # Display chat
-st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-for entry in st.session_state.messages:
-    role = entry["role"]
-    msg = entry["content"]
-    timestamp = entry.get("timestamp", datetime.now().strftime("%I:%M %p"))
-    css_class = "user" if role == "user" else "sonu"
-
+st.markdown('<div class="msg-container">', unsafe_allow_html=True)
+for msg in st.session_state.messages:
+    role = msg["role"]
+    content = msg["content"]
+    timestamp = msg.get("timestamp", "")
+    css_class = "user-msg" if role == "user" else "bot-msg"
+    
     st.markdown(f"""
-        <div class="chat-message {css_class}">
-            <div class="message-content">
-                {msg}
-                <div class="timestamp">{timestamp}</div>
-            </div>
+        <div class="{css_class}">
+            {content}
+            <div class="timestamp">{timestamp}</div>
         </div>
     """, unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-
 ###################################################################################################################################################################
+
 
 
 
