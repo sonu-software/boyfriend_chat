@@ -263,6 +263,59 @@ if query:
     
     st.session_state.messages[-1]["content"] = reply
 
+
+st.markdown("""
+    <style>
+    .msg-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .user-msg, .bot-msg {
+        max-width: 70%;
+        padding: 12px 16px;
+        border-radius: 16px;
+        font-size: 16px;
+        line-height: 1.5;
+        word-wrap: break-word;
+        position: relative;
+        box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    }
+
+    .user-msg {
+        align-self: flex-end;
+        background-color: #dcf8c6;
+        border-bottom-right-radius: 0;
+        color: black;
+    }
+
+    .bot-msg {
+        align-self: flex-start;
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-bottom-left-radius: 0;
+        color: black;
+    }
+
+    .timestamp {
+        font-size: 11px;
+        color: #999;
+        margin-top: 4px;
+        text-align: right;
+    }
+
+    .block-container {
+        background-image: url("https://i.imgur.com/U1p4iGI.png");
+        background-size: cover;
+        background-repeat: repeat;
+        background-position: center;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # Display chat
 st.markdown('<div class="msg-container">', unsafe_allow_html=True)
 for msg in st.session_state.messages:
@@ -280,6 +333,7 @@ for msg in st.session_state.messages:
 st.markdown('</div>', unsafe_allow_html=True)
 
 ###################################################################################################################################################################
+
 
 
 
