@@ -152,6 +152,11 @@ def knowledge_base(query):
 
 
 
+if "last_query" not in st.session_state:
+    st.session_state.last_query = None
+    
+if "last_response" not in st.session_state:
+    st.session_state.last_response = None
 
 
 
@@ -163,21 +168,22 @@ if query:
     now = datetime.now().strftime("%I:%M %p")
     st.session_state.messages.append({"role": "user", "content": query, "timestamp": now})
     st.session_state.messages.append({"role": "sonu", "content": "⏳ typing...", "timestamp": now})
+    time.sleep(5)
 
     # Get FAISS knowledge
     final_result = knowledge_base(query)
 
     # Prompt Sonu-style reply
-    if last_query and last_response:
+    if st.session_state.last_query and st.session_state.last_response:
         prompt = f"""
         You are Sonu — a sweet, desi, caring boyfriend who always texts in short, casual Hinglish lines.
         Your tone is warm, loving, sometimes flirty — just like a real boyfriend chatting on WhatsApp.
         
         Her last message to you was:
-        '{last_query}'
+        '{st.session_state.last_query}'
         
         And your last reply was:
-        '{last_response}'
+        '{st.session_state.last_response}'
         
         Now she says:
         '{query}'
@@ -220,8 +226,9 @@ if query:
 
     response = chat.send_message(prompt)
     reply = response.text.strip()
-    last_query=query
-    last_response=reply
+    st.session_state.last_query = query
+    st.session_state.last_response = reply
+    
     st.session_state.messages[-1]["content"] = reply
 
 # Display chat
@@ -244,6 +251,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 
 ###################################################################################################################################################################
+
 
 
 
