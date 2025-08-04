@@ -169,33 +169,7 @@ if query:
     india = pytz.timezone('Asia/Kolkata')
     now = datetime.now(india).strftime("%I:%M %p")
     st.session_state.messages.append({"role": "user", "content": query, "timestamp": now})
-    #st.session_state.messages.append({"role": "sonu", "content": "⏳ typing...", "timestamp": now})
-
-    
-    typing_placeholder = st.empty()
-
-    typing_placeholder.markdown(f"""
-    <div class="msg-container">
-        <div class="bot-msg">
-            ⏳ typing...
-            <div class="timestamp">{now}</div>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
-
-    time.sleep(3)
-
-    
-
-
-
-
-
-
-
-
-
-    
+    st.session_state.messages.append({"role": "sonu", "content": "⏳ typing...", "timestamp": now})
 
     # Get FAISS knowledge
     final_result = knowledge_base(query)
@@ -253,90 +227,31 @@ if query:
 
     response = chat.send_message(prompt)
     reply = response.text.strip()
-
-    typing_placeholder.empty()
-    st.session_state.messages.append({"role": "sonu", "content": reply, "timestamp": datetime.now(india).strftime("%I:%M %p")})
-
-    
     st.session_state.last_query = query
     st.session_state.last_response = reply
     
     st.session_state.messages[-1]["content"] = reply
 
-
-st.markdown("""
-    <style>
-    .msg-container {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        padding: 10px;
-    }
-
-    .user-msg, .bot-msg {
-        max-width: 70%;
-        padding: 12px 16px;
-        border-radius: 16px;
-        font-size: 16px;
-        line-height: 1.5;
-        word-wrap: break-word;
-        position: relative;
-        box-shadow: 0 1px 1px rgba(0,0,0,0.1);
-    }
-
-    .user-msg {
-        align-self: flex-end;
-        background-color: #dcf8c6;
-        border-bottom-right-radius: 0;
-        color: black;
-    }
-
-    .bot-msg {
-        align-self: flex-start;
-        background-color: #fff;
-        border: 1px solid #e0e0e0;
-        border-bottom-left-radius: 0;
-        color: black;
-    }
-
-    .timestamp {
-        font-size: 11px;
-        color: #999;
-        margin-top: 4px;
-        text-align: right;
-    }
-
-    .block-container {
-        background-image: url("https://i.imgur.com/U1p4iGI.png");
-        background-size: cover;
-        background-repeat: repeat;
-        background-position: center;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-
 # Display chat
-st.markdown('<div class="msg-container">', unsafe_allow_html=True)
-for msg in st.session_state.messages:
-    role = msg["role"]
-    content = msg["content"]
-    timestamp = msg.get("timestamp", "")
-    css_class = "user-msg" if role == "user" else "bot-msg"
-    
+st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+for entry in st.session_state.messages:
+    role = entry["role"]
+    msg = entry["content"]
+    timestamp = entry.get("timestamp", datetime.now().strftime("%I:%M %p"))
+    css_class = "user" if role == "user" else "sonu"
+
     st.markdown(f"""
-        <div class="{css_class}">
-            {content}
-            <div class="timestamp">{timestamp}</div>
+        <div class="chat-message {css_class}">
+            <div class="message-content">
+                {msg}
+                <div class="timestamp">{timestamp}</div>
+            </div>
         </div>
     """, unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
+
 ###################################################################################################################################################################
-
-
-
-
 
 
 
