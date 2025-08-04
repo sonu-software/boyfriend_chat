@@ -3,6 +3,7 @@ import re
 import warnings
 import time
 from datetime import datetime
+import pytz
 
 import streamlit as st
 from dotenv import load_dotenv
@@ -165,11 +166,10 @@ if "last_response" not in st.session_state:
 
 query = st.chat_input("Your message")
 if query:
-    now = datetime.now().strftime("%I:%M %p")
+    india = pytz.timezone('Asia/Kolkata')
+    now = datetime.now(india).strftime("%I:%M %p")
     st.session_state.messages.append({"role": "user", "content": query, "timestamp": now})
     st.session_state.messages.append({"role": "sonu", "content": "⏳ typing...", "timestamp": now})
-    st.experimental_rerun()
-    time.sleep(5)
 
     # Get FAISS knowledge
     final_result = knowledge_base(query)
@@ -252,6 +252,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 
 ###################################################################################################################################################################
+
 
 
 
