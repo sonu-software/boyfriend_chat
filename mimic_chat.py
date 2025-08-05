@@ -39,12 +39,18 @@ class EmbeddingModel(Embeddings):
     def embed_query(self, text):
         return self.model.encode(text, convert_to_numpy=True)
 
+
+
+
 # Load embedding model only once
 @st.cache_resource
 def load_embedding_model():
     return EmbeddingModel(SentenceTransformer("paraphrase-multilingual-MiniLM-L12-v2"))
 
 wrapped_model = load_embedding_model()
+
+
+
 
 # Clean WhatsApp chat messages
 def clean_chat(file_path):
@@ -72,6 +78,9 @@ def data_make(file_path):
     documents = [Document(page_content=text) for text in sonu_lines]
     return documents
 
+
+
+
 # Create or load FAISS DB
 @st.cache_resource(show_spinner="Loading chat memory...")
 def load_faiss_index():
@@ -89,6 +98,9 @@ def load_faiss_index():
         loaded_faiss = faiss_index_chat
 
     return loaded_faiss.as_retriever(search_type="similarity", search_kwargs={"k": 6})
+
+
+
 
 ##############################################################################################
 # Streamlit UI and chat logic
@@ -174,6 +186,7 @@ if query:
     # Get FAISS knowledge
     final_result = knowledge_base(query)
 
+    
     # Prompt Sonu-style reply
     if st.session_state.last_query and st.session_state.last_response:
         prompt = f"""
@@ -217,13 +230,23 @@ if query:
         
         Reply now..
         """
-
-    response = chat.send_message(prompt)
-    reply = response.text.strip()
+    try:
+        response = chat.send_message(prompt)
+        reply = response.text.strip()
+        
+    except google.api_core.exceptions.ResourceExhausted as e:
+        response= "Aaj thoda busy hoon baby... thodi der baad baat karte hain? 🥺"
+        reply=response.strip()
+    
     st.session_state.last_query = query
     st.session_state.last_response = reply
     
     st.session_state.messages[-1]["content"] = reply
+
+
+
+
+
 
 # Display chat
 st.markdown('<div class="chat-container">', unsafe_allow_html=True)
@@ -245,6 +268,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 
 ###################################################################################################################################################################
+
 
 
 
