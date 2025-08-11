@@ -190,24 +190,7 @@ if query:
     # Prompt Sonu-style reply
     if st.session_state.last_query and st.session_state.last_response:
 
-        
-        ###############################################################################################################################################
-        prompt=f"""
-        Reply like the user’s closest friend —  casual, and supportive — mimicking the tone, style, and wording from the provided embedding vectors.
-        friend's last message to you was:
-        '{st.session_state.last_query}'
-        
-        And yours's last reply was:
-        '{st.session_state.last_response}'
-        
-        Now friend says:
-        '{query}'
     
-        Now You Have To Reply According with These past chats (for style reference):
-        {final_result}
-        """
-        ################################################################################################################################################
-        '''
         prompt = f"""
         You are Sonu — sweet, desi BF texting in short Hinglish lines.
         
@@ -231,24 +214,11 @@ if query:
         
         Reply now..
         """
-        '''
+
 
     else:
-        ############################################################################################################################################
-        prompt=f"""
-        Reply like the user’s closest friend —  casual, and supportive — mimicking the tone, style, and wording from the provided embedding vectors.
-         Now friend's asks:
-        '{query}'
-    
-        Now You Have To Reply According with These are your past chats (for style reference):
-        '{final_result}'
-        """
-        ##############################################################################################################################################
-
-
-
         
-        '''
+
         prompt = f"""
         You are Sonu — sweet, desi BF texting in short Hinglish lines.
         Now she asks:
@@ -265,7 +235,6 @@ if query:
         
         Reply now..
         """
-        '''
     try:
         response = chat.send_message(prompt)
         reply = response.text.strip()
@@ -304,6 +273,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 
 ###################################################################################################################################################################
+
 
 
 
